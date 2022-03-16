@@ -5,7 +5,7 @@ import com.akshayashokcode.trendinggithubrepos.data.util.Resource
 import com.akshayashokcode.trendinggithubrepos.domain.repository.GitHubRepository
 
 class GetTrendingReposUseCase(private val gitHubRepository: GitHubRepository) {
-    suspend fun execute(): Resource<APIResponse> {
-        return gitHubRepository.getTrendingRepos()
+    suspend fun execute(page: Int): Resource<APIResponse> {
+        return gitHubRepository.getTrendingRepos(page)
     }
 }

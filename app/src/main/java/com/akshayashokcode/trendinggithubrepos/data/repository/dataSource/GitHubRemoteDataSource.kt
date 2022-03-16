@@ -4,6 +4,6 @@ import com.akshayashokcode.trendinggithubrepos.data.model.APIResponse
 import retrofit2.Response
 
 interface GitHubRemoteDataSource {
-    suspend fun getTrendingRepos(): Response<APIResponse>
-    suspend fun getSearchedRepos(query: String): Response<APIResponse>
+    suspend fun getTrendingRepos(page:Int): Response<APIResponse>
+    suspend fun getSearchedRepos(query: String,page:Int): Response<APIResponse>
 }

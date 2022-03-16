@@ -1,5 +1,6 @@
 package com.akshayashokcode.trendinggithubrepos.di
 
+import android.app.Application
 import com.akshayashokcode.trendinggithubrepos.data.api.GitHubAPIService
 import com.akshayashokcode.trendinggithubrepos.data.repository.GitHubRepositoryImpl
 import com.akshayashokcode.trendinggithubrepos.data.repository.dataSource.GitHubRemoteDataSource
@@ -7,6 +8,8 @@ import com.akshayashokcode.trendinggithubrepos.data.repository.dataSourceImpl.Gi
 import com.akshayashokcode.trendinggithubrepos.domain.repository.GitHubRepository
 import com.akshayashokcode.trendinggithubrepos.domain.usecase.GetSearchedReposUseCase
 import com.akshayashokcode.trendinggithubrepos.domain.usecase.GetTrendingReposUseCase
+import com.akshayashokcode.trendinggithubrepos.presentation.adapter.GitHubRepoAdapter
+import com.akshayashokcode.trendinggithubrepos.presentation.viewModel.GitHubReposViewModelFactory
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -31,14 +34,14 @@ object AppModule {
 
     @Provides
     @Singleton
-    fun provideGitHubAPIService(retrofit: Retrofit):GitHubAPIService{
+    fun provideGitHubAPIService(retrofit: Retrofit): GitHubAPIService {
         return retrofit.create(GitHubAPIService::class.java)
     }
 
     // Remote data
     @Provides
     @Singleton
-    fun provideNewsRemoteDataSource(gitHubAPIService: GitHubAPIService):GitHubRemoteDataSource{
+    fun provideNewsRemoteDataSource(gitHubAPIService: GitHubAPIService): GitHubRemoteDataSource {
         return GitHubRemoteDataSourceImpl(gitHubAPIService)
     }
 
@@ -47,7 +50,7 @@ object AppModule {
     @Singleton
     fun provideGitHubRepository(
         gitHubRemoteDataSource: GitHubRemoteDataSource,
-    ):GitHubRepository{
+    ): GitHubRepository {
         return GitHubRepositoryImpl(gitHubRemoteDataSource)
     }
 
@@ -55,16 +58,38 @@ object AppModule {
     @Provides
     @Singleton
     fun provideGetTrendingReposUseCase(
-        gitHubRepository: GitHubRepository
-    ):GetTrendingReposUseCase{
+        gitHubRepository: GitHubRepository,
+    ): GetTrendingReposUseCase {
         return GetTrendingReposUseCase(gitHubRepository)
     }
 
     @Provides
     @Singleton
     fun provideGetSearchedReposUseCase(
-        gitHubRepository: GitHubRepository
-    ):GetSearchedReposUseCase{
+        gitHubRepository: GitHubRepository,
+    ): GetSearchedReposUseCase {
         return GetSearchedReposUseCase(gitHubRepository)
+    }
+
+    // Adapter
+    @Singleton
+    @Provides
+    fun provideGitHubRepoAdapter(): GitHubRepoAdapter {
+        return GitHubRepoAdapter()
+    }
+
+    // ViewModelFactory
+    @Singleton
+    @Provides
+    fun provideGitHubReposViewModelFactory(
+        getTrendingReposUseCase: GetTrendingReposUseCase,
+        getSearchedReposUseCase: GetSearchedReposUseCase,
+        app: Application,
+    ):GitHubReposViewModelFactory{
+        return GitHubReposViewModelFactory(
+            getTrendingReposUseCase,
+            getSearchedReposUseCase,
+            app
+        )
     }
 }
