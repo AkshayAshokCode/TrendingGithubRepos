@@ -21,5 +21,5 @@ data class Item(
     @SerializedName("stargazers_count")
     val stargazersCount: Int,
     @SerializedName("topics")
-    val topics: List<String>,
+    val topics: List<String>
 )

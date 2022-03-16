@@ -9,15 +9,15 @@ import retrofit2.Response
 class GitHubRepositoryImpl(
     private val gitHubRemoteDataSource: GitHubRemoteDataSource
 ):GitHubRepository {
-    override suspend fun getTrendingRepos(): Resource<APIResponse> {
+    override suspend fun getTrendingRepos(page: Int): Resource<APIResponse> {
         return responseToResource(
-            gitHubRemoteDataSource.getTrendingRepos()
+            gitHubRemoteDataSource.getTrendingRepos(page)
         )
     }
 
-    override suspend fun getSearchedRepos(query: String): Resource<APIResponse> {
+    override suspend fun getSearchedRepos(query: String,page: Int): Resource<APIResponse> {
         return responseToResource(
-            gitHubRemoteDataSource.getSearchedRepos(query)
+            gitHubRemoteDataSource.getSearchedRepos(query,page)
         )
     }
     private fun responseToResource(response: Response<APIResponse>):Resource<APIResponse>{

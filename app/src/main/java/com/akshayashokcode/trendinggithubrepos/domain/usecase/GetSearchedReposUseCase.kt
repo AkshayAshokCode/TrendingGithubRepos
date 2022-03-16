@@ -6,7 +6,7 @@ import com.akshayashokcode.trendinggithubrepos.domain.repository.GitHubRepositor
 
 class GetSearchedReposUseCase(private val gitHubRepository: GitHubRepository) {
 
-suspend fun execute(query:String):Resource<APIResponse>{
-    return gitHubRepository.getSearchedRepos(query)
+suspend fun execute(query:String,page: Int):Resource<APIResponse>{
+    return gitHubRepository.getSearchedRepos(query,page)
 }
 }

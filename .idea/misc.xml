@@ -3,7 +3,9 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
+        <entry key="..\:/Users/Akshay/AndroidStudioProjects/TrendingGithubRepos/app/src/main/res/drawable/ic_circle.xml" value="0.164" />
         <entry key="..\:/Users/Akshay/AndroidStudioProjects/TrendingGithubRepos/app/src/main/res/layout/activity_main.xml" value="0.19166666666666668" />
+        <entry key="..\:/Users/Akshay/AndroidStudioProjects/TrendingGithubRepos/app/src/main/res/layout/github_repo_item.xml" value="0.33" />
       </map>
     </option>
   </component>

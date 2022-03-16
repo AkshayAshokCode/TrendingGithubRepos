@@ -10,19 +10,19 @@ interface GitHubAPIService {
     suspend fun getTrendingRepos(
         @Query("q")
         thisMonth: String,
+        @Query("page")
+        page:Int,
         @Query("sort")
-        sort: String = "stars",
-        @Query("per_page")
-        totalRepos: Int = 100,
+        sort: String = "stars"
     ): Response<APIResponse>
 
     @GET("search/repositories")
     suspend fun getSearchedRepos(
         @Query("q")
         query: String,
+        @Query("page")
+        page:Int,
         @Query("sort")
-        sort: String = "stars",
-        @Query("per_page")
-        totalRepos: Int = 100,
+        sort: String = "stars"
     ): Response<APIResponse>
 }

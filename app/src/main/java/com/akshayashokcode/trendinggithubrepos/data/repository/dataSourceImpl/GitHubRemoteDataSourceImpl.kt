@@ -11,17 +11,17 @@ import java.util.*
 class GitHubRemoteDataSourceImpl(
     private val gitHubAPIService: GitHubAPIService,
 ) : GitHubRemoteDataSource {
-    override suspend fun getTrendingRepos(): Response<APIResponse> {
+    override suspend fun getTrendingRepos( page: Int): Response<APIResponse> {
         val calender= Calendar.getInstance()
         calender.add(Calendar.MONTH,-1)
         val date=calender.time
         val sdf = SimpleDateFormat("yyyy-MM-dd")
         val dateNow = sdf.format(date)
        // Log.d("dateNow","Current Date:$dateNow")
-        return gitHubAPIService.getTrendingRepos("created:\">$dateNow\"")
+        return gitHubAPIService.getTrendingRepos("created:\">$dateNow\"",page)
     }
 
-    override suspend fun getSearchedRepos(query: String): Response<APIResponse> {
-        return gitHubAPIService.getSearchedRepos(query)
+    override suspend fun getSearchedRepos(query: String, page: Int): Response<APIResponse> {
+        return gitHubAPIService.getSearchedRepos(query,page)
     }
 }
