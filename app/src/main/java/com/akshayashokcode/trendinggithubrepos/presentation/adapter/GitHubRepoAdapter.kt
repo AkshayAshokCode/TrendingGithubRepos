@@ -1,15 +1,19 @@
 package com.akshayashokcode.trendinggithubrepos.presentation.adapter
 
 import android.graphics.Color
+import android.graphics.drawable.Drawable
 import android.util.Log
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
-import androidx.recyclerview.widget.AsyncListDiffer
-import androidx.recyclerview.widget.DiffUtil
+import android.widget.Toast
+import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.akshayashokcode.trendinggithubrepos.data.model.Item
 import com.akshayashokcode.trendinggithubrepos.databinding.GithubRepoItemBinding
+import com.akshayashokcode.trendinggithubrepos.util.AppUtils
 import com.bumptech.glide.Glide
+
 
 class GitHubRepoAdapter : RecyclerView.Adapter<GitHubRepoAdapter.GitHubViewHolder>() {
 
@@ -50,11 +54,10 @@ class GitHubRepoAdapter : RecyclerView.Adapter<GitHubRepoAdapter.GitHubViewHolde
             notifyDataSetChanged()
         }
         if (selectedItem == item.id) {
-            holder.binding.cardView.setCardBackgroundColor(Color.GREEN)
+            holder.binding.cardView.setCardBackgroundColor(Color.parseColor("#0096FF"))
         } else {
             holder.binding.cardView.setCardBackgroundColor(Color.WHITE)
         }
-
 
     }
 
@@ -68,12 +71,27 @@ class GitHubRepoAdapter : RecyclerView.Adapter<GitHubRepoAdapter.GitHubViewHolde
             binding.apply {
                 itemTitle.text = item.fullName
                 itemDesc.text = item.description
-                itemTime.text = item.createdAt
-                itemLanguage.text = item.language
+              //  itemLanguage.text = item.language
+                itemTime.text = AppUtils().getDate(item.createdAt)
+                starCount.text=item.stargazersCount.toString()
+                forkCount.text= item.forksCount.toString()
+
+                Glide.with(itemProfileImg.context)
+                    .load(item.owner.avatarUrl)
+                    .into(itemProfileImg)
+
+                if(item.language!=null){
+                    imgLanguage.visibility=View.VISIBLE
+                    itemLanguage.visibility=View.VISIBLE
+                    itemLanguage.text = item.language
+
+                }else{
+                    imgLanguage.visibility=View.GONE
+                    itemLanguage.visibility=View.GONE
+                }
+
             }
-            Glide.with(binding.itemProfileImg.context)
-                .load(item.owner.avatarUrl)
-                .into(binding.itemProfileImg)
+
 
 
         }
