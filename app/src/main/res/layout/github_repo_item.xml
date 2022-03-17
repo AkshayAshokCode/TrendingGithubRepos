@@ -21,8 +21,8 @@
 
         <de.hdodenhof.circleimageview.CircleImageView
             android:id="@+id/item_profile_img"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
+            android:layout_width="45dp"
+            android:layout_height="45dp"
             android:src="@drawable/ic_placeholder"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
@@ -34,7 +34,7 @@
             android:layout_marginLeft="10dp"
             android:layout_marginRight="10dp"
             android:ellipsize="end"
-            android:maxLines="1"
+            android:maxLines="2"
             android:paddingEnd="10dp"
             android:paddingRight="10dp"
             android:textColor="#060606"
@@ -78,7 +78,7 @@
 
 
         <ImageView
-            android:id="@+id/item_img_language"
+            android:id="@+id/img_language"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="15dp"
@@ -104,7 +104,70 @@
             android:textColor="#676767"
             android:textSize="14sp"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintLeft_toRightOf="@+id/item_img_language"
+            app:layout_constraintLeft_toRightOf="@+id/img_language"
+            app:layout_constraintTop_toBottomOf="@+id/item_desc" />
+
+        <ImageView
+            android:id="@+id/img_stars"
+            android:layout_width="wrap_content"
+            android:layout_height="20dp"
+            android:layout_marginTop="15dp"
+            android:layout_marginEnd="3dp"
+            android:layout_marginBottom="5dp"
+            android:adjustViewBounds="true"
+            android:paddingStart="5dp"
+            android:paddingLeft="5dp"
+            android:src="@drawable/git_star_icon"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/star_count"
+            app:layout_constraintTop_toBottomOf="@+id/item_desc" />
+
+        <TextView
+            android:id="@+id/star_count"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="15dp"
+            android:layout_marginBottom="5dp"
+            android:gravity="center_vertical"
+            android:paddingStart="8dp"
+            android:paddingLeft="8dp"
+            android:paddingEnd="22dp"
+            android:paddingRight="22dp"
+            android:textColor="#676767"
+            android:textSize="14sp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/img_fork"
+            app:layout_constraintTop_toBottomOf="@+id/item_desc" />
+
+        <ImageView
+            android:id="@+id/img_fork"
+            android:layout_width="wrap_content"
+            android:layout_height="20dp"
+            android:layout_marginTop="15dp"
+            android:layout_marginBottom="5dp"
+            android:adjustViewBounds="true"
+            android:paddingStart="5dp"
+            android:paddingLeft="5dp"
+            android:src="@drawable/git_fork_icon"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/fork_count"
+            app:layout_constraintTop_toBottomOf="@+id/item_desc" />
+
+        <TextView
+            android:id="@+id/fork_count"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="15dp"
+            android:layout_marginBottom="5dp"
+            android:gravity="center_vertical"
+            android:paddingStart="8dp"
+            android:paddingLeft="8dp"
+            android:paddingEnd="22dp"
+            android:paddingRight="22dp"
+            android:textColor="#676767"
+            android:textSize="14sp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/item_desc" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
