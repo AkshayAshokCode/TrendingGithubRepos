@@ -4,39 +4,54 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".MainActivity">
+    tools:context=".presentation.MainActivity">
+
+    <TextView
+        android:id="@+id/title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:background="@color/light_top"
+        android:paddingStart="15dp"
+        android:paddingTop="15dp"
+        android:text="Trending GitHub Repos"
+        android:textColor="@color/text_color"
+        android:textSize="20sp"
+        android:textStyle="bold" />
 
     <SearchView
         android:id="@+id/search"
         android:layout_width="match_parent"
-        android:queryHint="Search or jump to"
-        android:iconifiedByDefault="false"
         android:layout_height="wrap_content"
-        android:background="#53453C" />
+        android:layout_below="@+id/title"
+        android:layout_marginEnd="10dp"
+        android:background="@color/light_top"
+        android:iconifiedByDefault="true"
+        android:layoutDirection="rtl"
+        android:queryHint="Search or jump to" />
 
     <ProgressBar
         android:id="@+id/progressBar"
         style="?android:attr/progressBarStyle"
         android:layout_width="match_parent"
-        android:padding="30dp"
-        android:layout_below="@+id/search"
-        android:visibility="invisible"
         android:layout_height="wrap_content"
-        />
+        android:layout_below="@+id/search"
+        android:padding="30dp"
+        android:visibility="invisible" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recycler_view"
         android:layout_width="match_parent"
-        android:scrollbars="vertical"
+        android:layout_height="wrap_content"
         android:layout_below="@+id/search"
         android:padding="5dp"
-        android:layout_height="wrap_content" />
+        android:scrollbars="vertical" />
+
     <ProgressBar
         android:id="@+id/scroll_progressBar"
         style="?android:attr/progressBarStyle"
         android:layout_width="match_parent"
-        android:layout_alignParentBottom="true"
-        android:visibility="invisible"
         android:layout_height="wrap_content"
-        />
+        android:layout_alignParentBottom="true"
+        android:visibility="invisible" />
 </RelativeLayout>

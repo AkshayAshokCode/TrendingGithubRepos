@@ -17,7 +17,6 @@ class GitHubRemoteDataSourceImpl(
         val date=calender.time
         val sdf = SimpleDateFormat("yyyy-MM-dd")
         val dateNow = sdf.format(date)
-       // Log.d("dateNow","Current Date:$dateNow")
         return gitHubAPIService.getTrendingRepos("created:\">$dateNow\"",page)
     }
 

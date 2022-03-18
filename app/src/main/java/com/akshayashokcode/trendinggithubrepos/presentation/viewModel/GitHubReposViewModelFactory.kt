@@ -9,7 +9,7 @@ import com.akshayashokcode.trendinggithubrepos.domain.usecase.GetTrendingReposUs
 class GitHubReposViewModelFactory(
     private val getTrendingReposUseCase: GetTrendingReposUseCase,
     private val getSearchedReposUseCase: GetSearchedReposUseCase,
-    private val app: Application
+    private val app: Application,
 ) : ViewModelProvider.Factory {
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
         return GitHubReposViewModel(
