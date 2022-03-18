@@ -1,4 +1,3 @@
 <resources>
     <string name="app_name">Trending Github Repos</string>
-    <string name="item_date" formatted="false">%s at %s</string>
 </resources>

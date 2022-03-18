@@ -9,6 +9,7 @@ import com.akshayashokcode.trendinggithubrepos.domain.repository.GitHubRepositor
 import com.akshayashokcode.trendinggithubrepos.domain.usecase.GetSearchedReposUseCase
 import com.akshayashokcode.trendinggithubrepos.domain.usecase.GetTrendingReposUseCase
 import com.akshayashokcode.trendinggithubrepos.presentation.adapter.GitHubRepoAdapter
+import com.akshayashokcode.trendinggithubrepos.presentation.adapter.RepoTopicAdapter
 import com.akshayashokcode.trendinggithubrepos.presentation.viewModel.GitHubReposViewModelFactory
 import dagger.Module
 import dagger.Provides
@@ -32,6 +33,7 @@ object AppModule {
             .build()
     }
 
+    // Retrofit
     @Provides
     @Singleton
     fun provideGitHubAPIService(retrofit: Retrofit): GitHubAPIService {
@@ -63,6 +65,7 @@ object AppModule {
         return GetTrendingReposUseCase(gitHubRepository)
     }
 
+    // Use-cases
     @Provides
     @Singleton
     fun provideGetSearchedReposUseCase(
@@ -74,8 +77,15 @@ object AppModule {
     // Adapter
     @Singleton
     @Provides
-    fun provideGitHubRepoAdapter(): GitHubRepoAdapter {
-        return GitHubRepoAdapter()
+    fun provideGitHubRepoAdapter(repoTopicAdapter: RepoTopicAdapter): GitHubRepoAdapter {
+        return GitHubRepoAdapter(repoTopicAdapter)
+    }
+
+    // Adapter
+    @Singleton
+    @Provides
+    fun provideRepoTopicAdapter(): RepoTopicAdapter {
+        return RepoTopicAdapter()
     }
 
     // ViewModelFactory

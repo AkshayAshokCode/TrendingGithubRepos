@@ -1,4 +1,4 @@
-package com.akshayashokcode.trendinggithubrepos
+package com.akshayashokcode.trendinggithubrepos.presentation
 
 import android.os.Bundle
 import android.util.Log
@@ -15,9 +15,6 @@ import com.akshayashokcode.trendinggithubrepos.presentation.adapter.GitHubRepoAd
 import com.akshayashokcode.trendinggithubrepos.presentation.viewModel.GitHubReposViewModel
 import com.akshayashokcode.trendinggithubrepos.presentation.viewModel.GitHubReposViewModelFactory
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.MainScope
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @AndroidEntryPoint
@@ -35,6 +32,8 @@ class MainActivity : AppCompatActivity() {
     private var isLoading = false
     private var isScrollLoading = false
     private var isLastPage = false
+    private var isSearching = false
+    private var searchQuery = ""
     private var pages = 0
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -56,6 +55,11 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun viewRepoList() {
+
+        if (isSearching) {
+            page = 1
+            isSearching = false
+        }
         viewModel.getGitHubTrendingRepos(page)
         viewModel.gitHubRepos.observe(this) { response ->
             when (response) {
@@ -64,10 +68,10 @@ class MainActivity : AppCompatActivity() {
                     response.data?.let {
                         gitHubAdapter.setList(it.items.toList())
                         // Default results per page is 30
-                        if (it.totalCount % 30 == 0) {
-                            pages = it.totalCount / 30
+                        pages = if (it.totalCount % 30 == 0) {
+                            it.totalCount / 30
                         } else {
-                            pages = it.totalCount / 30 + 1
+                            it.totalCount / 30 + 1
                         }
                         isLastPage = page == pages
 
@@ -76,12 +80,14 @@ class MainActivity : AppCompatActivity() {
                 is Resource.Error -> {
                     hideProgressBar()
                     response.message?.let {
-                        Log.d("MainActivity","Error:$it")
-                        //    Toast.makeText(this, "An error occurred: $it", Toast.LENGTH_LONG).show()
+                        Log.e("MainActivity", "Trending Error:$it")
                     }
                 }
                 is Resource.Loading -> {
-                    showProgressBar()
+                    if (binding.scrollProgressBar.visibility == View.INVISIBLE) {
+                        showProgressBar()
+                    }
+
                 }
             }
         }
@@ -91,49 +97,50 @@ class MainActivity : AppCompatActivity() {
     private fun setSearchView() {
         binding.search.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
             override fun onQueryTextSubmit(p0: String?): Boolean {
+                searchQuery = p0.toString()
+                // Resetting page number
+                page = 1
                 viewModel.searchRepos(p0.toString(), page)
                 viewSearchedRepos()
                 return false
             }
 
             override fun onQueryTextChange(p0: String?): Boolean {
-                MainScope().launch {
-                    delay(1500)
-                    viewModel.searchRepos(p0.toString(), page)
-                    viewSearchedRepos()
-                    if (p0.toString().isEmpty()) {
-                       // gitHubAdapter.clearList()
-                        viewRepoList()
-                        binding.search.clearFocus()
-                    }
-                }
+                /*   MainScope().launch {
+                       delay(1500)
+                       searchQuery=p0.toString()
+                       viewModel.searchRepos(p0.toString(), page)
+                       viewSearchedRepos()
+                       if (p0.toString().isEmpty()) {
+                           viewRepoList()
+                           binding.search.clearFocus()
+                       }
+                   }
+                   */
                 return false
-
             }
         })
         binding.search.setOnCloseListener {
             initRecyclerview()
-            //gitHubAdapter.clearList()
-            viewRepoList()
+            removeObserversAndBackToMainPage()
             binding.search.clearFocus()
             false
         }
     }
 
     fun viewSearchedRepos() {
+        isSearching = true
         viewModel.searchedRepos.observe(this) { response ->
             when (response) {
                 is Resource.Success -> {
                     hideProgressBar()
                     response.data?.let {
-                        // gitHubAdapter.clearList()
-
                         // Default results per page is 30
-                        gitHubAdapter.setList(it.items.toList())
-                        if (it.totalCount % 30 == 0) {
-                            pages = it.totalCount / 30
+                        gitHubAdapter.setSearchedList(it.items.toList())
+                        pages = if (it.totalCount % 30 == 0) {
+                            it.totalCount / 30
                         } else {
-                            pages = it.totalCount / 30 + 1
+                            it.totalCount / 30 + 1
                         }
                         isLastPage = page == pages
 
@@ -142,12 +149,13 @@ class MainActivity : AppCompatActivity() {
                 is Resource.Error -> {
                     hideProgressBar()
                     response.message?.let {
-                        Log.d("MainActivity","Error:$it")
-                        //   Toast.makeText(this, "An error occurred: $it", Toast.LENGTH_LONG).show()
+                        Log.e("MainActivity", "Searched Error:$it")
                     }
                 }
                 is Resource.Loading -> {
-                    showProgressBar()
+                    if (binding.scrollProgressBar.visibility == View.INVISIBLE) {
+                        showProgressBar()
+                    }
                 }
             }
         }
@@ -156,7 +164,7 @@ class MainActivity : AppCompatActivity() {
     private val onScrollListener = object : RecyclerView.OnScrollListener() {
         override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
             super.onScrollStateChanged(recyclerView, newState)
-            Log.d("MainActivity", "total items:${gitHubAdapter.itemCount}")
+
             if (newState == AbsListView.OnScrollListener.SCROLL_STATE_TOUCH_SCROLL) {
                 isScrolling = true
                 hideScrollProgressBar()
@@ -176,9 +184,22 @@ class MainActivity : AppCompatActivity() {
             if (shouldPaginate) {
                 page++
                 showScrollProgressBar()
-                viewModel.getGitHubTrendingRepos(page)
+                if (isSearching) {
+                    viewModel.searchRepos(searchQuery, page)
+                } else {
+                    viewModel.getGitHubTrendingRepos(page)
+                }
+
                 isScrolling = false
             }
+        }
+    }
+
+    private fun removeObserversAndBackToMainPage() {
+        if (isSearching) {
+            viewModel.gitHubRepos.removeObservers(this)
+            viewModel.searchedRepos.removeObservers(this)
+            viewRepoList()
         }
     }
 
@@ -200,5 +221,15 @@ class MainActivity : AppCompatActivity() {
     private fun hideScrollProgressBar() {
         isScrollLoading = false
         binding.scrollProgressBar.visibility = View.INVISIBLE
+    }
+
+    override fun onBackPressed() {
+        if (!binding.search.isIconified) {
+            binding.search.isIconified = true
+            binding.search.onActionViewCollapsed()
+            removeObserversAndBackToMainPage()
+        } else {
+            super.onBackPressed()
+        }
     }
 }

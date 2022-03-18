@@ -1,41 +1,52 @@
 package com.akshayashokcode.trendinggithubrepos.presentation.adapter
 
 import android.graphics.Color
-import android.graphics.drawable.Drawable
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
-import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.akshayashokcode.trendinggithubrepos.data.model.Item
 import com.akshayashokcode.trendinggithubrepos.databinding.GithubRepoItemBinding
 import com.akshayashokcode.trendinggithubrepos.util.AppUtils
 import com.bumptech.glide.Glide
+import com.google.android.flexbox.FlexboxLayoutManager
+import javax.inject.Inject
 
 
-class GitHubRepoAdapter : RecyclerView.Adapter<GitHubRepoAdapter.GitHubViewHolder>() {
+class GitHubRepoAdapter @Inject constructor(private var repoTopicAdapter: RepoTopicAdapter) :
+    RecyclerView.Adapter<GitHubRepoAdapter.GitHubViewHolder>() {
 
     private val itemList = ArrayList<Item>()
+    private var tempItemList = ArrayList<Item>()
     private var selectedItem = -1
+    private var isSearched = false
+    private val viewPool = RecyclerView.RecycledViewPool()
 
-   /* fun setSearchedList(items: List<Item>) {
-        //on adding it, old data is replaced when scrolled
-        // if removed, searched items gets added below it
-        itemList.clear()
+    fun setSearchedList(items: List<Item>) {
+        if (!isSearched && itemList.isNotEmpty()) {
+            tempItemList.clear()
+            tempItemList = itemList
+            itemList.clear()
+            isSearched = true
+        }
         itemList.addAll(items)
+        Log.d("MainActivity", "ItemList ${itemList.size}")
         notifyDataSetChanged()
-    }*/
+    }
+
     fun setList(items: List<Item>) {
-        itemList.clear()
-        itemList.addAll(items)
+        if (isSearched && tempItemList.isNotEmpty()) {
+            itemList.clear()
+            itemList.addAll(tempItemList)
+            tempItemList.clear()
+            isSearched = false
+        } else {
+            itemList.addAll(items)
+        }
         notifyDataSetChanged()
     }
-  /*  fun clearList(){
-        itemList.clear()
-    }
-*/
+
 
     override fun onCreateViewHolder(
         parent: ViewGroup,
@@ -53,12 +64,26 @@ class GitHubRepoAdapter : RecyclerView.Adapter<GitHubRepoAdapter.GitHubViewHolde
             selectedItem = item.id
             notifyDataSetChanged()
         }
+
         if (selectedItem == item.id) {
-            holder.binding.cardView.setCardBackgroundColor(Color.parseColor("#0096FF"))
+            holder.binding.cardView.setCardBackgroundColor(Color.parseColor("#6CBB3C"))
         } else {
             holder.binding.cardView.setCardBackgroundColor(Color.WHITE)
         }
 
+        if (item.topics != null) {
+            holder.binding.apply {
+                val childLayoutManager = FlexboxLayoutManager(recyclerViewTopics.context)
+                recyclerViewTopics.layoutManager = childLayoutManager
+
+                recyclerViewTopics.apply {
+                    layoutManager = childLayoutManager
+                    adapter = repoTopicAdapter
+                    setRecycledViewPool(viewPool)
+                    repoTopicAdapter.setList(item.topics)
+                }
+            }
+        }
     }
 
     override fun getItemCount(): Int {
@@ -71,29 +96,24 @@ class GitHubRepoAdapter : RecyclerView.Adapter<GitHubRepoAdapter.GitHubViewHolde
             binding.apply {
                 itemTitle.text = item.fullName
                 itemDesc.text = item.description
-              //  itemLanguage.text = item.language
                 itemTime.text = AppUtils().getDate(item.createdAt)
-                starCount.text=item.stargazersCount.toString()
-                forkCount.text= item.forksCount.toString()
+                starCount.text = item.stargazersCount.toString()
+                forkCount.text = item.forksCount.toString()
 
                 Glide.with(itemProfileImg.context)
                     .load(item.owner.avatarUrl)
                     .into(itemProfileImg)
 
-                if(item.language!=null){
-                    imgLanguage.visibility=View.VISIBLE
-                    itemLanguage.visibility=View.VISIBLE
+                if (item.language != null) {
+                    imgLanguage.visibility = View.VISIBLE
+                    itemLanguage.visibility = View.VISIBLE
                     itemLanguage.text = item.language
 
-                }else{
-                    imgLanguage.visibility=View.GONE
-                    itemLanguage.visibility=View.GONE
+                } else {
+                    imgLanguage.visibility = View.GONE
+                    itemLanguage.visibility = View.GONE
                 }
-
             }
-
-
-
         }
     }
 }
